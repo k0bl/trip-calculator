@@ -56,20 +56,33 @@ while (len(trip.legs) < numlegs):
 	trip.legs.append(leg)
 
 trip.total_fuel_cost = 0
-
-for c in trip.cars:
-	for l in trip.legs:
+for l in trip.legs:
+	print("Calculating costs for", l.point_a_name, " to ", l.point_b_name)
+	leg_fuel_cost = 0
+	for c in trip.cars:
+		vehicle_fuel_cost = 0
 		num_fuel_stops = (l.total_distance / (c.tank_size*c.hwy_mpg))
 		if c.fuel_type == "regular":
-			trip.total_fuel_cost += ((c.tank_size*l.avg_fuel_reg_cost)*num_fuel_stops)
+			vehicle_fuel_cost = ((c.tank_size*l.avg_fuel_reg_cost)*num_fuel_stops)
+			leg_fuel_cost += vehicle_fuel_cost
 		elif c.fuel_type == "premium":
-			trip.total_fuel_cost += ((c.tank_size*l.avg_fuel_prem_cost)*num_fuel_stops)
+			vehicle_fuel_cost = ((c.tank_size*l.avg_fuel_prem_cost)*num_fuel_stops)
+			leg_fuel_cost += vehicle_fuel_cost
 
-print("Total Fueld Cost for Trip: ", trip.total_fuel_cost)
+	trip.total_fuel_cost += leg_fuel_cost
+	print("Total Distance of Leg: ", l.total_distance)
+	print("Total Fuel Cost for Leg: ", leg_fuel_cost)
+	print("Lodging Cost for Leg: ", l.lodging_cost)
+	print("Total Cost for Leg: ", leg_fuel_cost + l.lodging_cost)
+
 trip.total_miles = 0
 for l in trip.legs:
 	trip.total_miles += l.total_distance
+print("-------------------------------------------------------------------")
+print("Calulation Report for ", trip.start_location, "to", trip.final_destination)
 print("Total Distance: ", trip.total_miles)
+
+print("Total Fuel Cost for Trip: ", trip.total_fuel_cost)
 
 trip.total_lodging = 0
 for l in trip.legs:
